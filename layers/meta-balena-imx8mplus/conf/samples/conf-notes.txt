@@ -1,0 +1,16 @@
+
+  _           _                   ___  ____
+ | |__   __ _| | ___ _ __   __ _ / _ \/ ___|
+ | '_ \ / _` | |/ _ \ '_ \ / _` | | | \___ \
+ | |_) | (_| | |  __/ | | | (_| | |_| |___) |
+ |_.__/ \__,_|_|\___|_| |_|\__,_|\___/|____/
+
+ -------------------------------------------- 
+
+Resin specific images available:
+	balena-image
+
+Compulab IOT-GATE-iMX8PLUS 1G-8G DRAM    : $ MACHINE=iot-gate-imx8plus-d1d8 bitbake balena-image
+Compulab IOT-GATE-iMX8PLUS 2G-4G DRAM    : $ MACHINE=iot-gate-imx8plus bitbake balena-image
+Compulab IOTDIN-iMX8P 2G-4G DRAM         : $ MACHINE=iotdin-imx8p bitbake balena-image
+

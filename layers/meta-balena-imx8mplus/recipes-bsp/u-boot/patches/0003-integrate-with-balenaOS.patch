@@ -1,0 +1,88 @@
+From 8e697b1cf25ec328ede675736a48771e2fa4ad87 Mon Sep 17 00:00:00 2001
+From: Valentin Raevsky <valentin@compulab.co.il>
+Date: Mon, 6 May 2024 18:19:21 +0300
+Subject: [PATCH 3/4] integrate with balenaOS
+
+Signed-off-by: Valentin Raevsky <valentin@compulab.co.il>
+---
+ configs/iotdin-imx8p_defconfig        |  1 +
+ include/configs/compulab-imx8m-plus.h | 20 +++++++++++---------
+ 2 files changed, 12 insertions(+), 9 deletions(-)
+
+diff --git a/configs/iotdin-imx8p_defconfig b/configs/iotdin-imx8p_defconfig
+index 5a27397f57..934a18a174 100644
+--- a/configs/iotdin-imx8p_defconfig
++++ b/configs/iotdin-imx8p_defconfig
+@@ -58,6 +58,7 @@ CONFIG_CMD_EFIDEBUG=y
+ CONFIG_CMD_PMIC=y
+ CONFIG_CMD_REGULATOR=y
+ CONFIG_CMD_EXT4_WRITE=y
++CONFIG_CMD_FS_UUID=y
+ CONFIG_OF_CONTROL=y
+ CONFIG_SPL_OF_CONTROL=y
+ CONFIG_ENV_IS_NOWHERE=y
+diff --git a/include/configs/compulab-imx8m-plus.h b/include/configs/compulab-imx8m-plus.h
+index 4258a2da1b..0430ccc200 100644
+--- a/include/configs/compulab-imx8m-plus.h
++++ b/include/configs/compulab-imx8m-plus.h
+@@ -83,12 +83,13 @@
+ 	"scriptaddr=0x43500000\0" \
+ 	"kernel_addr_r=" __stringify(CONFIG_LOADADDR) "\0" \
+ 	"bsp_script=boot.scr\0" \
+-	"image=Image\0" \
++	"image=Image.gz\0" \
+ 	"splashimage=0x50000000\0" \
+ 	"console=ttymxc1,115200 console=tty1\0" \
+-	"fdt_addr_r=0x43000000\0"			\
+-	"fdto_addr_r=0x43800000\0"			\
+-	"fdt_addr=0x43000000\0"			\
++	"fdt_addr_r=0x45000000\0"			\
++	"fdto_addr_r=0x45800000\0"			\
++	"fdt_addr=0x45000000\0"			\
++	"zip_addr=48440000\0" \
+ 	"boot_fdt=try\0" \
+ 	"fdt_high=0xffffffffffffffff\0"		\
+ 	"boot_fit=no\0" \
+@@ -99,6 +100,7 @@
+ 	"mmcroot=" CONFIG_MMCROOT " rootwait rw\0" \
+ 	"mmcautodetect=yes\0" \
+ 	"mmcargs=setenv bootargs ${jh_clk} console=${console} root=${mmcroot}\0 " \
++	"mmcargs=setenv bootargs ${jh_clk} console=${console} ${resin_kernel_root} ${os_cmdline}\0 " \
+ 	"loadbootscript=load mmc ${mmcdev}:${mmcpart} ${loadaddr} ${bsp_script};\0" \
+ 	"bootscript=echo Running bootscript from mmc ...; " \
+ 		"source\0" \
+@@ -141,8 +143,8 @@
+ 		"usb_dev=0\0" \
+ 		"boot_part=1\0" \
+ 		"root_opt=rootwait rw\0" \
+-		"emmc_ul=setenv iface mmc; setenv dev ${emmc_dev}; setenv part ${boot_part};" \
+-		"setenv bootargs console=${console} root=${emmc_root} ${root_opt};\0" \
++		"emmc_ul=setenv iface mmc; setenv dev ${resin_dev_index}; setenv part ${resin_root_part};" \
++		"setenv bootargs console=${console} ${resin_kernel_root} ${os_cmdline};\0" \
+ 		"sd_ul=setenv iface mmc; setenv dev ${sd_dev}; setenv part ${boot_part};" \
+ 			"setenv bootargs console=${console} root=${sd_root} ${root_opt};\0" \
+ 		"usb_ul=usb start; setenv iface usb; setenv dev ${usb_dev}; setenv part ${boot_part};" \
+@@ -150,9 +152,9 @@
+ 		"ulbootscript=load ${iface} ${dev}:${part} ${scriptaddr} ${bsp_script};\0" \
+ 		"ulrunbootscript=echo Running bootscript from ${iface} ${dev}:${part} ...; " \
+ 				"source ${scriptaddr}\0" \
+-		"ulimage=load ${iface} ${dev}:${part} ${loadaddr} ${image}\0" \
++		"ulimage=load ${iface} ${resin_dev_index}:${resin_root_part} ${zip_addr} boot/${image}; unzip ${zip_addr} ${loadaddr}; \0" \
+ 		"ulfdt=if test ${boot_fdt} = yes || test ${boot_fdt} = try; then " \
+-			"load ${iface} ${dev}:${part} ${fdt_addr_r} ${fdtfile}; " \
++			"load ${iface} ${resin_dev_index}:${resin_root_part} ${fdt_addr_r} boot/${fdtfile};" \
+ 			"if itest.s x != x${fdtofile}; then " \
+ 			    "load ${iface} ${dev}:${part} ${fdto_addr_r} ${fdtofile};" \
+ 			    "fdt addr ${fdt_addr_r}; fdt resize 0x8000; fdt apply ${fdto_addr_r};" \
+@@ -160,7 +162,7 @@
+ 			    "true;" \
+ 			"fi;" \
+ 		"fi;\0" \
+-		"bootlist=usb_ul sd_ul emmc_ul\0" \
++		"bootlist=emmc_ul\0" \
+ 		"bsp_bootcmd=echo Running BSP bootcmd ...; " \
+ 		"for src in ${bootlist}; do " \
+ 			"echo Running ${src} ...; " \
+-- 
+2.34.1
+

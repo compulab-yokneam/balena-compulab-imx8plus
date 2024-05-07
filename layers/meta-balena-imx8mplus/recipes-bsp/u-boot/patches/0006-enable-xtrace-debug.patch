@@ -1,0 +1,25 @@
+From ead9353a010361af6859cd93665bfd1f250db136 Mon Sep 17 00:00:00 2001
+From: Valentin Raevsky <valentin@compulab.co.il>
+Date: Tue, 7 May 2024 00:29:15 +0300
+Subject: [PATCH 6/6] enable xtrace debug
+
+Signed-off-by: Valentin Raevsky <valentin@compulab.co.il>
+---
+ include/configs/compulab-imx8m-plus.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/include/configs/compulab-imx8m-plus.h b/include/configs/compulab-imx8m-plus.h
+index 17da2e48a0..385e22b2cb 100644
+--- a/include/configs/compulab-imx8m-plus.h
++++ b/include/configs/compulab-imx8m-plus.h
+@@ -76,6 +76,7 @@
+ 	JAILHOUSE_ENV \
+ 	BOOTENV \
+ 	MACHINE_EXTRA_ENV_SETTINGS \
++	"xtrace=yes\0" \
+ 	"stdout=serial,vidconsole\0" \
+ 	"stderr=serial,vidconsole\0" \
+ 	"stdin=serial,usbkbd\0" \
+-- 
+2.34.1
+

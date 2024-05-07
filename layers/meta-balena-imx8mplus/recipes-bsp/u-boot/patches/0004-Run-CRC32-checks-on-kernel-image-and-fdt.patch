@@ -1,0 +1,38 @@
+From 1d4b1c4f2079dcd2e6ffc19a586f1cc86469b6b9 Mon Sep 17 00:00:00 2001
+From: Valentin Raevsky <valentin@compulab.co.il>
+Date: Mon, 6 May 2024 18:33:28 +0300
+Subject: [PATCH 4/4] Run CRC32 checks on kernel image and fdt
+
+Signed-off-by: Valentin Raevsky <valentin@compulab.co.il>
+---
+ include/configs/compulab-imx8m-plus.h | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/include/configs/compulab-imx8m-plus.h b/include/configs/compulab-imx8m-plus.h
+index 0430ccc200..cbc1c5304d 100644
+--- a/include/configs/compulab-imx8m-plus.h
++++ b/include/configs/compulab-imx8m-plus.h
+@@ -152,9 +152,9 @@
+ 		"ulbootscript=load ${iface} ${dev}:${part} ${scriptaddr} ${bsp_script};\0" \
+ 		"ulrunbootscript=echo Running bootscript from ${iface} ${dev}:${part} ...; " \
+ 				"source ${scriptaddr}\0" \
+-		"ulimage=load ${iface} ${resin_dev_index}:${resin_root_part} ${zip_addr} boot/${image}; unzip ${zip_addr} ${loadaddr}; \0" \
++		"ulimage=if load ${iface} ${resin_dev_index}:${resin_root_part} ${zip_addr} boot/${image}; then unzip ${zip_addr} ${loadaddr}; run balena_kernel_load_crc_save; else false; fi; \0" \
+ 		"ulfdt=if test ${boot_fdt} = yes || test ${boot_fdt} = try; then " \
+-			"load ${iface} ${resin_dev_index}:${resin_root_part} ${fdt_addr_r} boot/${fdtfile};" \
++			"load ${iface} ${resin_dev_index}:${resin_root_part} ${fdt_addr_r} boot/${fdtfile} && run balena_fdt_load_crc_save;" \
+ 			"if itest.s x != x${fdtofile}; then " \
+ 			    "load ${iface} ${dev}:${part} ${fdto_addr_r} ${fdtofile};" \
+ 			    "fdt addr ${fdt_addr_r}; fdt resize 0x8000; fdt apply ${fdto_addr_r};" \
+@@ -173,6 +173,8 @@
+ 			"fi; " \
+ 			"if run ulimage; then " \
+ 				"if run ulfdt; then " \
++					"run balena_kernel_load_crc_check; " \
++					"run balena_fdt_load_crc_check; " \
+ 					"booti ${loadaddr} - ${fdt_addr_r}; " \
+ 				"else " \
+ 					"if test ${boot_fdt} != yes; then " \
+-- 
+2.34.1
+

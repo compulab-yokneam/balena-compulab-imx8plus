@@ -1,0 +1,17 @@
+function get_all_stuff() {
+	git clone --recursive https://github.com/balena-os/balena-iot-gate-imx8plus.git
+	wget -qO - https://github.com/compulab-yokneam/balena-compulab-imx8plus/archive/refs/heads/master.tar.gz | dd status=progress | tar -C balena-iot-gate-imx8plus --strip-components=2 --extract --gzip --file -
+	git -C balena-iot-gate-imx8plus/layers/meta-bsp-imx8mp checkout kirkstone-2.2.0 
+}
+
+function show_next_step() {
+cat << eof
+Continue with:
+
+$(sed -n '41,51p' balena-iot-gate-imx8plus/README.md)
+
+eof
+}
+
+get_all_stuff
+show_next_step

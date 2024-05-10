@@ -12,5 +12,5 @@ Resin specific images available:
 
 Compulab IOT-GATE-iMX8PLUS 1G-8G DRAM    : $ MACHINE=iot-gate-imx8plus-d1d8 bitbake balena-image
 Compulab IOT-GATE-iMX8PLUS 2G-4G DRAM    : $ MACHINE=iot-gate-imx8plus bitbake balena-image
+Compulab IOTDIN-iMX8P 1G-8G DRAM         : $ MACHINE=iotdin-imx8p-d1d8 bitbake balena-image
 Compulab IOTDIN-iMX8P 2G-4G DRAM         : $ MACHINE=iotdin-imx8p bitbake balena-image
-
